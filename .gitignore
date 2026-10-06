@@ -1,0 +1,19 @@
+# gradle
+.gradle/
+build/
+
+# ide
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+.classpath
+.project
+.settings/
+bin/
+out/
+
+# minecraft run directories
+run/
+run-data/
