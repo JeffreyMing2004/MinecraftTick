@@ -5,6 +5,7 @@ import java.util.List;
 import com.mojang.logging.LogUtils;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.FishingRodItem;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.TickEvent;
@@ -97,11 +98,15 @@ public class Tick {
             AfkTracker.markActive(event.getPlayer().getUUID());
         }
 
+        // A player who interacts without moving the camera still counts as active —
+        // except fishing rod casts/retracts (including the held-right-click use spam of
+        // AFK fishing farms), which must not keep the world running.
         @SubscribeEvent
         public static void onInteract(PlayerInteractEvent event) {
-            if (!event.getEntity().level().isClientSide) {
-                AfkTracker.markActive(event.getEntity().getUUID());
+            if (event.getEntity().level().isClientSide || event.getItemStack().getItem() instanceof FishingRodItem) {
+                return;
             }
+            AfkTracker.markActive(event.getEntity().getUUID());
         }
 
         @SubscribeEvent
